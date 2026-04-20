@@ -40,6 +40,8 @@ app.post("/api/v1/signup",async (req, res)=>{
     }
 })
 
+const PORT = process.env.PORT || 3000;
+
 
 console.log("JWT:", process.env.JWT_SECRET);
 console.log("MONGO:", process.env.MONGO_URL);
@@ -198,4 +200,6 @@ app.get("/api/v1/brain/:shareLink",async (req, res)=>{
     })
 })
 
-app.listen(3000)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
