@@ -12,7 +12,12 @@ enum ContentType{
     Notes= "notes"
 }
 
-export function AddContent({open, onClose}){
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
+
+export function AddContent({open, onClose}: Props){
     const titleRef= useRef<HTMLInputElement>(null)
     const linkRef= useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLTextAreaElement>(null);

@@ -6,13 +6,14 @@ import { BACKEND_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 
 export function SignIn(){
-
-    const usernameRef= useRef<HTMLInputElement>()
-    const passwordRef=useRef<HTMLInputElement>()
+const usernameRef = useRef<HTMLInputElement | null>(null);
+const passwordRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate()
     async function signin(){
-        const username= usernameRef.current.value;
-        const password= passwordRef.current.value;
+        const username = usernameRef.current?.value;
+        const password = passwordRef.current?.value;
+
+        if (!username || !password) return;
         const response= await axios.post(`${BACKEND_URL}/api/v1/signin`, {
                 username, 
                 password 
