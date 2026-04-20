@@ -4,10 +4,13 @@ import { SignUp } from "./pages/signup"
 import { SignIn } from "./pages/Signin"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { SharedBrain } from "./pages/ShareBrain"
+import { ThemeProvider } from "./context/ThemeContext"
 
 function App() {
   
-  return <BrowserRouter>
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="brainly-theme">
+      <BrowserRouter>
     <Routes>
       <Route path="/share/:shareLink" element={<SharedBrain />} />
 
@@ -22,7 +25,9 @@ function App() {
           </ProtectedRoute>
         }/>
     </Routes>
-  </BrowserRouter>
+      </BrowserRouter>
+    </ThemeProvider>
+  )
 }
 
 export default App

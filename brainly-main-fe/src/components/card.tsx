@@ -1,55 +1,9 @@
-// import { DeleteIcon } from "../icon/deleteIcon";
-// import { ShareIcon } from "../icon/shareIcon";
-
-// interface CardProps{
-//     title: string
-//     link: string 
-//     type: "youtube" | "twitter" | "notes"
-//     content?: string
-// }
-// export function Card(props: CardProps){
-//     let vidId;
-//     if(props.link.includes("v=")){
-//         vidId=props.link.split("v=")[1]?.split("&")[0];
-//     }
-//     if(props.link.includes("youtu.be/")){
-//         vidId=props.link.split("youtu.be/")[1]?.split("?")[0];
-//     }
-
-//     return <div className="p-8 bg-white rounded-md max-w-76 border-gray-100 border shadow-sm">
-//         <div className="flex items-center justify-between ">
-//             <div >   
-//                 <p className="text-sm ">{props.title}</p>
-//             </div>
-//             <div  className="flex">
-//                 <div className="pr-2 text-gray-400">
-//                     <a href={props.link} target="_blank"></a>
-//                     <ShareIcon/> 
-//                 </div>
-//                 <div className="pr-2 text-gray-400">
-//                     <DeleteIcon/>
-//                 </div>
-//             </div>
-//         </div>
-//         <div className="pt-4">
-            
-//             {props.type ==="youtube" && <iframe className="w-full" src={`https://www.youtube.com/embed/${vidId}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>}
-             
-
-
-//         {props.type==="twitter" && <blockquote className="twitter-tweet">
-//             <a href={props.link.replace("x.com", "twitter.com")}></a> 
-//         </blockquote>}
-
-//         </div>
-//     </div>
-// }
-
-
 import axios from "axios";
-import { DeleteIcon } from "../icon/deleteIcon";
-import { ShareIcon } from "../icon/shareIcon";
+import { ExternalLink, Trash2, Pencil } from "lucide-react";
 import { BACKEND_URL } from "../config";
+import { motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
+import type { HTMLAttributes } from "react";
 
 interface CardProps {
   _id: string;
@@ -58,20 +12,50 @@ interface CardProps {
   link?: string;
   content?: string;
   onDelete?: () => void;
+  onEdit?: () => void;
+  dragHandleProps?: HTMLAttributes<HTMLDivElement>;
 }
 
-export function Card({ _id, title, type, link, content, onDelete }: CardProps) {
+const typeLabel: Record<string, string> = {
+  youtube: "Video",
+  twitter: "Tweet",
+  notes: "Note",
+};
+
+const typeDot: Record<string, string> = {
+  youtube: "bg-red-500",
+  twitter: "bg-sky-400",
+  notes: "bg-sage-500",
+};
+
+export function Card({
+  _id,
+  title,
+  type,
+  link,
+  content,
+  onDelete,
+  onEdit,
+  dragHandleProps,
+}: CardProps) {
+  const { theme } = useTheme();
   let vidId: string | undefined;
+  const dragHandleClassName = dragHandleProps?.className ?? "";
 
   async function handleDelete() {
-    await axios.delete(`${BACKEND_URL}/api/v1/brain/content`, {
-      data: { contentId: _id },
-      headers: {
-        Authorization: localStorage.getItem("token")
-      }
-    })
-    onDelete?.();
+    try {
+      await axios.delete(`${BACKEND_URL}/api/v1/brain/content`, {
+        data: { contentId: _id },
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      });
+      onDelete?.();
+    } catch (e) {
+      console.error("Failed to delete content", e);
+    }
   }
+
   if (type === "youtube" && link) {
     if (link.includes("v=")) {
       vidId = link.split("v=")[1]?.split("&")[0];
@@ -81,54 +65,94 @@ export function Card({ _id, title, type, link, content, onDelete }: CardProps) {
   }
 
   return (
-<div className="p-4 bg-white rounded-md border-gray-100 border shadow-sm mb-4 break-inside-avoid w-full">
-        <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">{title}</p>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="group relative flex w-full flex-col overflow-hidden rounded-xl border border-surface-200 bg-white transition-shadow duration-200 hover:shadow-lg hover:shadow-surface-900/5 dark:border-surface-800 dark:bg-surface-900 dark:hover:shadow-amber-500/5"
+    >
+      {/* Header */}
+      <div
+        {...dragHandleProps}
+        className={`flex items-start justify-between gap-3 p-4 pb-0 ${dragHandleClassName}`.trim()}
+      >
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className={`h-2 w-2 rounded-full shrink-0 ${typeDot[type]}`} />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-surface-400 dark:text-surface-500">
+              {typeLabel[type]}
+            </span>
+          </div>
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-surface-900 dark:text-surface-100">
+            {title}
+          </h3>
+        </div>
 
-        <div className="flex">
+        {/* Actions — visible on hover (desktop), always on mobile */}
+        <div className="flex shrink-0 items-center gap-0.5 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
           {link && (
             <a
               href={link}
               target="_blank"
               rel="noreferrer"
-              className="pr-2 text-gray-400"
+              className="rounded-md p-1.5 text-surface-400 hover:bg-surface-100 hover:text-surface-700 dark:hover:bg-surface-800 dark:hover:text-surface-200 transition-colors"
+              title="Open link"
             >
-              <ShareIcon />
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
           )}
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="rounded-md p-1.5 text-surface-400 hover:bg-surface-100 hover:text-surface-700 dark:hover:bg-surface-800 dark:hover:text-surface-200 transition-colors cursor-pointer"
+              title="Edit"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+          )}
           {onDelete && (
-            <div onClick={handleDelete} className="pr-2 text-gray-400 cursor-pointer">
-              <DeleteIcon />
-            </div>
+            <button
+              onClick={handleDelete}
+              className="rounded-md p-1.5 text-surface-400 hover:bg-err-500/10 hover:text-err-500 dark:hover:bg-err-500/10 dark:hover:text-err-400 transition-colors cursor-pointer"
+              title="Delete"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
           )}
         </div>
       </div>
 
-      <div className="pt-4">
+      {/* Body */}
+      <div className="p-4">
         {/* 📝 NOTES */}
         {type === "notes" && (
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">
+          <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-surface-600 dark:text-surface-400">
             {content}
           </p>
         )}
 
         {/* ▶️ YOUTUBE */}
         {type === "youtube" && vidId && (
-          <iframe
-            className="w-full aspect-video"
-            src={`https://www.youtube.com/embed/${vidId}`}
-            title="YouTube video player"
-            allowFullScreen
-          />
+          <div className="overflow-hidden rounded-lg bg-surface-100 dark:bg-surface-800 -mx-0.5">
+            <iframe
+              className="aspect-video w-full"
+              src={`https://www.youtube.com/embed/${vidId}`}
+              title="YouTube video player"
+              allowFullScreen
+            />
+          </div>
         )}
 
         {/* 🐦 TWITTER */}
         {type === "twitter" && link && (
-          <blockquote className="twitter-tweet">
-            <a href={link.replace("x.com", "twitter.com")}></a>
-          </blockquote>
+          <div className="overflow-hidden rounded-lg">
+            <blockquote className="twitter-tweet w-full" data-theme={theme === 'dark' ? 'dark' : 'light'}>
+              <a href={link.replace("x.com", "twitter.com")}></a>
+            </blockquote>
+          </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

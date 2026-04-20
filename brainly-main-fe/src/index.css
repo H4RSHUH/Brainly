@@ -1,10 +1,139 @@
 @import "tailwindcss";
-@theme {
-  --color-gray-100: #eeeeef;
-  --color-gray-200: #e6e9ed;
-  --color-gray-600: #95989c;
+@custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  /* — Warm neutrals (not cold slate) — */
+  --color-surface-50: #FAFAF7;
+  --color-surface-100: #F3F2EE;
+  --color-surface-200: #E8E6E0;
+  --color-surface-300: #D4D1C9;
+  --color-surface-400: #A8A59C;
+  --color-surface-500: #7A776E;
+  --color-surface-600: #5C5950;
+  --color-surface-700: #3D3B35;
+  --color-surface-800: #272520;
+  --color-surface-850: #1C1B17;
+  --color-surface-900: #131210;
+  --color-surface-950: #0A0A08;
+
+  /* — Amber accent (knowledge, warmth, illumination) — */
+  --color-amber-50: #FFF9EB;
+  --color-amber-100: #FFF0C7;
+  --color-amber-200: #FFE08A;
+  --color-amber-300: #FFCC4D;
+  --color-amber-400: #F5B731;
+  --color-amber-500: #D4A028;
+  --color-amber-600: #B8841E;
+  --color-amber-700: #8E6218;
+  --color-amber-800: #6B4A14;
+  --color-amber-900: #4A3410;
+
+  /* — Sage green (secondary, organic feel) — */
+  --color-sage-400: #8BAE96;
+  --color-sage-500: #6B9A7A;
+  --color-sage-600: #537A60;
+
+  /* — Error / destructive — */
+  --color-err-400: #F87171;
+  --color-err-500: #EF4444;
+  --color-err-600: #DC2626;
+
+  /* — Legacy purple (kept for backward compat) — */
   --color-purple-200: #d9ddee;
   --color-purple-500: #9492db;
   --color-purple-600: #7164c0;
-} 
+
+  /* — Font families — */
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Base layer ── */
+html {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-surface-50);
+  color: var(--color-surface-800);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: var(--color-surface-950);
+  color: var(--color-surface-200);
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-300);
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-surface-700);
+}
+
+/* ── Masonry columns ── */
+.masonry-grid {
+  columns: 1;
+  column-gap: 1.25rem;
+}
+@media (min-width: 640px) {
+  .masonry-grid { columns: 2; }
+}
+@media (min-width: 1024px) {
+  .masonry-grid { columns: 3; }
+}
+@media (min-width: 1536px) {
+  .masonry-grid { columns: 4; }
+}
+.masonry-grid > * {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Subtle background texture (noise grain) ── */
+.bg-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.025;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+.dark .bg-grain::before {
+  opacity: 0.04;
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--color-amber-200);
+  color: var(--color-surface-900);
+}
+.dark ::selection {
+  background: var(--color-amber-700);
+  color: var(--color-surface-50);
+}
+
+/* ── Focus ring utility ── */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-surface-950), 0 0 0 4px var(--color-amber-400);
+}
+.dark .focus-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-surface-950), 0 0 0 4px var(--color-amber-500);
+}

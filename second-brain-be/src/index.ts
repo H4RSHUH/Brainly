@@ -106,6 +106,35 @@ app.post("/api/v1/content",userMiddleware,async (req, res)=>{
 
 })
 
+app.put("/api/v1/content", userMiddleware, async (req, res) => {
+    const { contentId, title, link, content } = req.body;
+    
+    // @ts-ignore
+    const userId = req.userId;
+
+    const existingContent = await contentModel.findOne({ _id: contentId, userId });
+    
+    if (!existingContent) {
+        return res.status(404).json({ msg: "Content not found" });
+    }
+
+    const updateData: any = {};
+    if (title !== undefined) updateData.title = title;
+    
+    if (existingContent.type === "notes") {
+        if (content !== undefined) updateData.content = content;
+    } else {
+        if (link !== undefined) updateData.link = link;
+    }
+
+    await contentModel.updateOne(
+        { _id: contentId, userId },
+        { $set: updateData }
+    );
+
+    res.json({ msg: "Content updated successfully" });
+});
+
 app.get("/api/v1/content",userMiddleware,async (req, res)=>{
     // @ts-ignore
     const userId= req.userId
