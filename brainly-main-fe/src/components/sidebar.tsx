@@ -12,6 +12,7 @@ interface SidebarProps {
   activeType: string | null;
   onYoutube: () => void;
   onTwitter: () => void;
+  onReddit: () => void;
   onNotes: () => void;
   onAll: () => void;
   isOpen: boolean;
@@ -22,6 +23,7 @@ export function Sidebar({
   activeType,
   onYoutube,
   onTwitter,
+  onReddit,
   onNotes,
   onAll,
   isOpen,
@@ -84,6 +86,7 @@ export function Sidebar({
           <SidebarItem text="All Content" onClick={onAll} active={activeType === null} icon={<LayoutGrid />} />
           <SidebarItem text="Tweets" onClick={onTwitter} active={activeType === "twitter"} icon={<TwitterIcon/>}/>
           <SidebarItem text="Videos" onClick={onYoutube} active={activeType === "youtube"} icon={<YoutubeIcon/>}/>
+          <SidebarItem text="Reddit" onClick={onReddit} active={activeType === "reddit"} icon={<LayoutGrid />}/>
           <SidebarItem text="Notes" onClick={onNotes} active={activeType === "notes"} icon={<NotesIcon/>}/>
         </nav>
 

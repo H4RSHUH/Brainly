@@ -79,9 +79,9 @@ app.post("/api/v1/signin",async (req, res)=>{
 })
 app.post("/api/v1/content",userMiddleware,async (req, res)=>{
     const { link, type, title, content}= req.body;
-    if((type==="twitter" || type==="youtube") && !link){
+    if((type==="twitter" || type==="youtube" || type === "reddit") && !link){
         return res.status(501).json({
-            msg: "link is required for youtube and twitter content"
+            msg: "link is required for youtube, twitter and reddit content"
         })
     }
 

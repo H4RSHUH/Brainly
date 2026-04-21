@@ -61,6 +61,12 @@ export function Dashboard() {
     }
   }, [contents]);
 
+  useEffect(() => {
+  if ((window as any).reddit) {
+    (window as any).reddit.widgets.load();
+  }
+}, [contents]);
+
   // Sync order when contents change (new items added, items deleted)
   useEffect(() => {
     if (contents.length === 0) return;
@@ -131,6 +137,7 @@ export function Dashboard() {
         onClose={() => setSidebarOpen(false)}
         onYoutube={() => { setType("youtube"); setSidebarOpen(false); }}
         onTwitter={() => { setType("twitter"); setSidebarOpen(false); }}
+        onReddit={() => { setType("reddit"); setSidebarOpen(false); }}
         onNotes={() => { setType("notes"); setSidebarOpen(false); }}
         onAll={() => { setType(null); setSidebarOpen(false); }}
       />

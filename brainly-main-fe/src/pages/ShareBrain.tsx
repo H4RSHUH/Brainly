@@ -43,6 +43,7 @@ export function SharedBrain() {
         onClose={() => setSidebarOpen(false)}
         onYoutube={() => { setActiveType("youtube"); setSidebarOpen(false); }}
         onTwitter={() => { setActiveType("twitter"); setSidebarOpen(false); }}
+        onReddit={() => { setActiveType("reddit"); setSidebarOpen(false); }}
         onNotes={() => { setActiveType("notes"); setSidebarOpen(false); }}
         onAll={() => { setActiveType(null); setSidebarOpen(false); }}
       />

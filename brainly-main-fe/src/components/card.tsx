@@ -8,7 +8,7 @@ import type { HTMLAttributes } from "react";
 interface CardProps {
   _id: string;
   title: string;
-  type: "youtube" | "twitter" | "notes";
+  type: "youtube" | "twitter" | "notes" | "reddit";
   link?: string;
   content?: string;
   onDelete?: () => void;
@@ -20,12 +20,14 @@ const typeLabel: Record<string, string> = {
   youtube: "Video",
   twitter: "Tweet",
   notes: "Note",
+  reddit: "Reddit"
 };
 
 const typeDot: Record<string, string> = {
   youtube: "bg-red-500",
   twitter: "bg-sky-400",
   notes: "bg-sage-500",
+  reddit: "bg-orange-500"
 };
 
 export function Card({
@@ -40,6 +42,7 @@ export function Card({
 }: CardProps) {
   const { theme } = useTheme();
   let vidId: string | undefined;
+  let redditEmbedUrl: string | undefined;
   const dragHandleClassName = dragHandleProps?.className ?? "";
 
   async function handleDelete() {
@@ -61,6 +64,16 @@ export function Card({
       vidId = link.split("v=")[1]?.split("&")[0];
     } else if (link.includes("youtu.be/")) {
       vidId = link.split("youtu.be/")[1]?.split("?")[0];
+    }
+  }
+
+  if (type === "reddit" && link) {
+    try {
+      const url = new URL(link);
+      const redditTheme = theme === "dark" ? "dark" : "light";
+      redditEmbedUrl = `https://www.redditmedia.com${url.pathname}?ref_source=embed&ref=share&embed=true&theme=${redditTheme}`;
+    } catch {
+      redditEmbedUrl = undefined;
     }
   }
 
@@ -150,6 +163,18 @@ export function Card({
             <blockquote className="twitter-tweet w-full" data-theme={theme === 'dark' ? 'dark' : 'light'}>
               <a href={link.replace("x.com", "twitter.com")}></a>
             </blockquote>
+          </div>
+        )}
+
+        {/* 📰 REDDIT */}
+        {type === "reddit" && redditEmbedUrl && (
+          <div className="overflow-hidden rounded-lg bg-surface-100 dark:bg-surface-800 -mx-0.5">
+            <iframe
+              className="w-full"
+              style={{ height: "500px" }}
+              src={redditEmbedUrl}
+              title="Reddit post"
+            />
           </div>
         )}
       </div>

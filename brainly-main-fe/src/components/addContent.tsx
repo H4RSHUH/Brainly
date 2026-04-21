@@ -11,7 +11,8 @@ import { TwitterIcon } from "../icon/twitterIcon";
 enum ContentType {
   Youtube = "youtube",
   Twitter = "twitter",
-  Notes = "notes"
+  Notes = "notes",
+  Reddit = "reddit"
 }
 
 type Props = {
@@ -90,6 +91,7 @@ export function AddContent({ open, onClose, initialData }: Props) {
   const typeOptions = [
     { value: ContentType.Youtube, label: "Video", icon: <span className="[&>svg]:h-4 [&>svg]:w-4"><YoutubeIcon /></span>, dot: "bg-red-500" },
     { value: ContentType.Twitter, label: "Tweet", icon: <span className="[&>svg]:h-4 [&>svg]:w-4"><TwitterIcon /></span>, dot: "bg-sky-400" },
+    { value: ContentType.Reddit, label: "Reddit", icon: <FileText className="h-4 w-4" />, dot: "bg-orange-500" },
     { value: ContentType.Notes, label: "Note", icon: <FileText className="h-4 w-4" />, dot: "bg-sage-500" },
   ];
 
@@ -167,7 +169,13 @@ export function AddContent({ open, onClose, initialData }: Props) {
               <Input 
                 ref={linkRef} 
                 label="Link"
-                placeholder={type === ContentType.Youtube ? "https://youtube.com/..." : "https://x.com/..."} 
+                placeholder={
+                  type === ContentType.Youtube
+                    ? "https://youtube.com/..."
+                    : type === ContentType.Twitter
+                      ? "https://x.com/..."
+                      : "https://reddit.com/..."
+                } 
               />
             )}
           </div>
