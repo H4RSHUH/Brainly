@@ -117,7 +117,7 @@ export function Dashboard() {
 
   const activeLabel = type === null 
     ? "All Content" 
-    : type.charAt(0).toUpperCase() + type.slice(1) + "s";
+    : type.charAt(0).toUpperCase() + type.slice(1);
 
   return (
     <div className="bg-grain min-h-screen bg-surface-50 dark:bg-surface-950 flex">
@@ -127,6 +127,7 @@ export function Dashboard() {
             open={openModal} 
             onClose={() => { setModalOpen(false); setEditingContent(null); }} 
             initialData={editingContent}
+            defaultType={type ?? undefined}
           />
         )}
       </AnimatePresence>

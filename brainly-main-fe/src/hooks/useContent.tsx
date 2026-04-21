@@ -5,17 +5,17 @@ import axios from "axios";
 export interface ContentItem {
     _id: string;
     title: string;
-    type: "youtube" | "twitter" | "notes";
+    type: "youtube" | "twitter" | "reddit" | "notes";
     link?: string;
     content?: string;
 }
 
 export function useContent(){
     const [contents, setContents]= useState<ContentItem[]>([]);
-    const [type, setType] = useState<string | null>(null);
+    const [type, setType] = useState<ContentItem["type"] | null>(null);
     const [loading, setLoading] = useState(false);
 
-    async function refresh(selectedType: string | null = type){
+    async function refresh(selectedType: ContentItem["type"] | null = type){
         setLoading(true);
 
         let url = `${BACKEND_URL}/api/v1/content`;

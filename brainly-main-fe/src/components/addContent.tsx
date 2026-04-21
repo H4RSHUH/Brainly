@@ -19,14 +19,17 @@ type Props = {
   open: boolean;
   onClose: () => void;
   initialData?: any;
+  defaultType?: "youtube" | "twitter" | "reddit" | "notes";
 };
 
-export function AddContent({ open, onClose, initialData }: Props) {
+export function AddContent({ open, onClose, initialData, defaultType }: Props) {
   const titleRef = useRef<HTMLInputElement>(null);
   const linkRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [type, setType] = useState(initialData?.type || ContentType.Youtube);
+  const [type, setType] = useState(
+    (initialData?.type || defaultType || ContentType.Youtube) as ContentType
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -35,8 +38,11 @@ export function AddContent({ open, onClose, initialData }: Props) {
       if (titleRef.current) titleRef.current.value = initialData.title || "";
       if (linkRef.current && initialData.link) linkRef.current.value = initialData.link;
       if (contentRef.current && initialData.content) contentRef.current.value = initialData.content;
+      setType(initialData.type || ContentType.Youtube);
+    } else if (open) {
+      setType((defaultType || ContentType.Youtube) as ContentType);
     }
-  }, [initialData, type, open]);
+  }, [initialData, open, defaultType]);
 
   async function addContent() {
     const title = titleRef.current?.value;

@@ -5,7 +5,7 @@ import { Card } from "./card";
 interface SortableCardProps {
   _id: string;
   title: string;
-  type: "youtube" | "twitter" | "notes";
+  type: "youtube" | "twitter" | "reddit" | "notes";
   link?: string;
   content?: string;
   onDelete?: () => void;
