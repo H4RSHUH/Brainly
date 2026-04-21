@@ -7,6 +7,7 @@ import { SidebarItem } from "./sidebarItem";
 import { useTheme } from "../context/ThemeContext";
 import { cn } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
+import { RedditIcon } from "../icon/redditIcon";
 
 interface SidebarProps {
   activeType: string | null;
@@ -85,8 +86,8 @@ export function Sidebar({
         <nav className="flex-1 space-y-0.5 px-3">
           <SidebarItem text="All Content" onClick={onAll} active={activeType === null} icon={<LayoutGrid />} />
           <SidebarItem text="Tweets" onClick={onTwitter} active={activeType === "twitter"} icon={<TwitterIcon/>}/>
-          <SidebarItem text="Videos" onClick={onYoutube} active={activeType === "youtube"} icon={<YoutubeIcon/>}/>
-          <SidebarItem text="Reddit" onClick={onReddit} active={activeType === "reddit"} icon={<LayoutGrid />}/>
+          <SidebarItem text="Youtube" onClick={onYoutube} active={activeType === "youtube"} icon={<YoutubeIcon/>}/>
+          <SidebarItem text="Reddit" onClick={onReddit} active={activeType === "reddit"} icon={<RedditIcon />}/>
           <SidebarItem text="Notes" onClick={onNotes} active={activeType === "notes"} icon={<NotesIcon/>}/>
         </nav>
 
